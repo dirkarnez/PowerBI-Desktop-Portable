@@ -39,7 +39,8 @@ jobs:
       - name: uncompress
         shell: cmd
         run: |
-          .\lessmsi\lessmsi.exe x ".\AttachedContainer\PBIDesktop_x64.msi" "installation"
+          .\lessmsi\lessmsi.exe x "AttachedContainer\PBIDesktop_x64.msi" "installation" &&^
+          dir
 
       - shell: cmd
         run: |
