@@ -38,7 +38,7 @@ jobs:
       - name: uncompress
         shell: cmd
         run: |
-          .\lessmsi\lessmsi.exe x "AttachedContainer\PBIDesktopSetup_x64.exe" "installation"
+          .\lessmsi\lessmsi.exe x ".\AttachedContainer\PBIDesktopSetup_x64.exe" "installation"
 
       - shell: cmd
         run: xcopy /H /Y /C "PBIDesktop.exe.Portable.cmd" "installation\SourceDir\Microsoft Power BI Desktop\bin"
