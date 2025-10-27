@@ -2,9 +2,9 @@ name: portable-release-actions-workflow
 on:
   push:
     # Sequence of patterns matched against refs/tags
-    # tags:
-    #   - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-    #   - 'c*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'c*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 permissions:
     contents: write
@@ -42,19 +42,23 @@ jobs:
           .\lessmsi\lessmsi.exe x ".\AttachedContainer\PBIDesktop_x64.msi" "installation"
 
       - shell: cmd
-        run: xcopy /H /Y /C "PBIDesktop.exe.Portable.cmd" "installation\SourceDir\Microsoft Power BI Desktop\bin\"
+        run: |
+          cd "installation\SourceDir\" &&^
+          ren "Microsoft Power BI Desktop" "Microsoft_Power_BI_Desktop"
+          
+      - shell: cmd
+        run: xcopy /H /Y /C "PBIDesktop.exe.Portable.cmd" "installation\SourceDir\Microsoft_Power_BI_Desktop\bin\"
         
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: "installation/SourceDir/Microsoft Power BI Desktop/bin"
+          directory: "installation/SourceDir/Microsoft_Power_BI_Desktop/bin"
           filename: "${{ env.targetZip }}"
           
       - name: Release prebuilt
         uses: ncipollo/release-action@v1.18.0
         with:
-          artifacts: "installation/SourceDir/Microsoft Power BI Desktop/bin/${{ env.targetZip }}"
+          artifacts: "installation/SourceDir/Microsoft_Power_BI_Desktop/bin/${{ env.targetZip }}"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          
