@@ -42,7 +42,7 @@ jobs:
           .\lessmsi\lessmsi.exe x ".\AttachedContainer\PBIDesktop_x64.msi" "installation"
 
       - shell: cmd
-        run: xcopy /H /Y /C "PBIDesktop.exe.Portable.cmd" "installation\SourceDir\Microsoft Power BI Desktop\bin"
+        run: xcopy /H /Y /C "PBIDesktop.exe.Portable.cmd" "installation\SourceDir\Microsoft Power BI Desktop\bin\"
         
       - name: Archive Release
         uses: thedoctor0/zip-release@master
