@@ -1,3 +1,59 @@
-- https://github.com/activescott/lessmsi/releases/download/v2.10.3/lessmsi-v2.10.3.zip
-- https://github.com/Bioruebe/UniExtract2/releases/download/v2.0.0-rc.3/UniExtractRC3.zip
-- https://download.microsoft.com/download/8/8/0/880bca75-79dd-466a-927d-1abf1f5454b0/PBIDesktopSetup_x64.exe
+name: portable-release-actions-workflow
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'c*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+permissions:
+    contents: write
+    
+jobs:
+  build:
+    name: Create Release
+    runs-on: windows-latest
+    env:
+      targetZip: PowerBI-Desktop-portable-${{ github.ref_name }}.zip
+    steps:
+      - uses: actions/checkout@v5
+      
+      - name: installer
+        shell: cmd
+        run: |
+          curl https://download.microsoft.com/download/8/8/0/880bca75-79dd-466a-927d-1abf1f5454b0/PBIDesktopSetup_x64.exe -L -O -J &&^
+          dir
+          
+      - name: lessmsi 
+        shell: cmd
+        run: | 
+          curl https://github.com/activescott/lessmsi/releases/download/v1.10.0/lessmsi-v1.10.0.zip -L --output lessmsi.zip &&^
+          7z.exe x lessmsi.zip -o"lessmsi"
+          
+      - name: WIX uncompress
+        shell: cmd
+        run: |
+          dark.exe -x "%cd%" PBIDesktopSetup_x64.exe
+
+      - name: uncompress
+        shell: cmd
+        run: |
+          .\lessmsi\lessmsi.exe x "AttachedContainer\PBIDesktopSetup_x64.exe" "installation"
+
+      - shell: cmd
+        run: xcopy /H /Y /C "PBIDesktop.exe.Portable.cmd" "installation\SourceDir\Microsoft Power BI Desktop\bin"
+        
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          directory: "installation/SourceDir/Microsoft Power BI Desktop/bin"
+          filename: "${{ env.targetZip }}"
+          
+      - name: Release prebuilt
+        uses: ncipollo/release-action@v1.18.0
+        with:
+          artifacts: "installation/SourceDir/Microsoft Power BI Desktop/bin/${{ env.targetZip }}"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
