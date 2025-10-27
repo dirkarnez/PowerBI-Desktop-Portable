@@ -44,22 +44,22 @@ jobs:
 
       - shell: cmd
         run: |
-          cd "SourceDir\" &&^
+          cd "PBIDesktop_x64\SourceDir\" &&^
           ren "Microsoft Power BI Desktop" "Microsoft_Power_BI_Desktop"
           
       - shell: cmd
-        run: xcopy /H /Y /C "PBIDesktop.exe.Portable.cmd" ".\SourceDir\Microsoft_Power_BI_Desktop\bin\"
+        run: xcopy /H /Y /C "PBIDesktop.exe.Portable.cmd" ".\PBIDesktop_x64\SourceDir\Microsoft_Power_BI_Desktop\bin\"
         
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: "SourceDir/Microsoft_Power_BI_Desktop/bin"
+          directory: "PBIDesktop_x64/SourceDir/Microsoft_Power_BI_Desktop/bin"
           filename: "${{ env.targetZip }}"
           
       - name: Release prebuilt
         uses: ncipollo/release-action@v1.18.0
         with:
-          artifacts: "SourceDir/Microsoft_Power_BI_Desktop/bin/${{ env.targetZip }}"
+          artifacts: "PBIDesktop_x64/SourceDir/Microsoft_Power_BI_Desktop/bin/${{ env.targetZip }}"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
