@@ -39,27 +39,27 @@ jobs:
       - name: uncompress
         shell: cmd
         run: |
-          .\lessmsi\lessmsi.exe x "AttachedContainer\PBIDesktop_x64.msi" "installation" &&^
+          .\lessmsi\lessmsi.exe x "AttachedContainer\PBIDesktop_x64.msi" &&^
           dir
 
       - shell: cmd
         run: |
-          cd "installation\SourceDir\" &&^
+          cd "SourceDir\" &&^
           ren "Microsoft Power BI Desktop" "Microsoft_Power_BI_Desktop"
           
       - shell: cmd
-        run: xcopy /H /Y /C "PBIDesktop.exe.Portable.cmd" "installation\SourceDir\Microsoft_Power_BI_Desktop\bin\"
+        run: xcopy /H /Y /C "PBIDesktop.exe.Portable.cmd" ".\SourceDir\Microsoft_Power_BI_Desktop\bin\"
         
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: "installation/SourceDir/Microsoft_Power_BI_Desktop/bin"
+          directory: "SourceDir/Microsoft_Power_BI_Desktop/bin"
           filename: "${{ env.targetZip }}"
           
       - name: Release prebuilt
         uses: ncipollo/release-action@v1.18.0
         with:
-          artifacts: "installation/SourceDir/Microsoft_Power_BI_Desktop/bin/${{ env.targetZip }}"
+          artifacts: "SourceDir/Microsoft_Power_BI_Desktop/bin/${{ env.targetZip }}"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
