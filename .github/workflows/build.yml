@@ -2,9 +2,9 @@ name: portable-release-actions-workflow
 on:
   push:
     # Sequence of patterns matched against refs/tags
-    tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-      - 'c*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    # tags:
+    #   - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    #   - 'c*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 permissions:
     contents: write
@@ -33,7 +33,8 @@ jobs:
       - name: WIX uncompress
         shell: cmd
         run: |
-          dark.exe -x "%cd%" PBIDesktopSetup_x64.exe
+          dark.exe -x "%cd%" PBIDesktopSetup_x64.exe &&^
+          dir
 
       - name: uncompress
         shell: cmd
